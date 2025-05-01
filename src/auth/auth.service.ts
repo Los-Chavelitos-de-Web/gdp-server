@@ -59,7 +59,7 @@ export class AuthService {
       const authPassw = await comparePassword(user.password, u?.password);
 
       if (authPassw) {
-        const payload = { userId: u.id, username: u.name, role: u.role };
+        const payload = { userId: u.id };
 
         return {
           token: await this.jwtService.signAsync(
