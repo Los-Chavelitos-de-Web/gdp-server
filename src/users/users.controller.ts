@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Body,
+  NotFoundException,
 } from '@nestjs/common';
 import { JsonWebTokenError, JwtService } from '@nestjs/jwt'; // Asegúrate de importar el JwtService
 import { UsersService } from './users.service';
@@ -71,7 +72,7 @@ export class UsersController {
       }
 
       const token = headers.replace('Bearer ', '');
-      const decoded = this.jwtService.verify(token);
+      const decoded = this.jwtService.decode(token);
 
       const tokenUserId = decoded['userId'];
       const role = decoded['role'];
@@ -79,14 +80,14 @@ export class UsersController {
       const isAdmin = role === 'ADMIN';
       const isOwner = userId === tokenUserId;
 
-      if (!isAdmin || !isOwner) {
+      if (!isAdmin && !isOwner) {
         throw new ForbiddenException('Access denied');
       }
 
       const user = await this.userService.getUserById(userId);
 
       if (!user) {
-        throw new UnauthorizedException('User not found');
+        throw new NotFoundException('User not found');
       }
 
       return user;
