@@ -16,7 +16,7 @@ export class UsersController {
   constructor(
     private readonly userService: UsersService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   @Get('getAll')
   async getAllUsers(@Headers('Authorization') headers: string) {
@@ -79,7 +79,7 @@ export class UsersController {
       const isAdmin = role === 'ADMIN';
       const isOwner = userId === tokenUserId;
 
-      if (!isAdmin && !isOwner) {
+      if (!isAdmin || !isOwner) {
         throw new ForbiddenException('Access denied');
       }
 
