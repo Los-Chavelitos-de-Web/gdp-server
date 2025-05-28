@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
-import { ProductPay } from 'src/models/Product';
+import { PayType } from 'src/types/PayType';
 
 const client = new MercadoPagoConfig({
   accessToken: process.env.MERCADOPAGO_API_KEY || '',
@@ -8,20 +8,20 @@ const client = new MercadoPagoConfig({
 
 @Injectable()
 export class PayService {
-  async createPreference(correo: string, products: ProductPay[]) {
+  async createPreference(payData: PayType) {
     const pref = new Preference(client);
 
     try {
       const res = await pref.create({
         body: {
-          items: products,
+          items: payData.products,
           back_urls: {
             success: `${process.env.FRONT_URL}/success`,
             failure: `${process.env.FRONT_URL}/failure`,
             pending: `${process.env.FRONT_URL}/pending`,
           },
           payer: {
-            email: correo,
+            email: payData.correo,
           },
         },
       });
