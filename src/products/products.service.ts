@@ -8,4 +8,12 @@ export class ProductsService {
   getProducts() {
     return this.prisma.product.findMany();
   }
+
+  async getProductoById(id: string) {
+    return this.prisma.product.findFirst({
+      where: {
+        id: parseInt(id),
+      },
+    });
+  }
 }
